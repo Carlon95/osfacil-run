@@ -5,6 +5,8 @@ export const signUpSchema = z.object({
   businessName: z.string().trim().optional(),
   email: z.string().trim().email("E-mail inválido"),
   phone: z.string().trim().optional(),
+  profession: z.string().trim().optional(),
+  professionOther: z.string().trim().optional(),
   password: z.string().min(6, "A senha precisa ter pelo menos 6 caracteres"),
 });
 

@@ -6,6 +6,14 @@ export async function getUserById(userId: string) {
   return db.select().from(users).where(eq(users.id, userId)).get();
 }
 
+export async function getClientById(userId: string, clientId: string) {
+  return db
+    .select()
+    .from(clients)
+    .where(and(eq(clients.id, clientId), eq(clients.userId, userId)))
+    .get();
+}
+
 export async function getClientsForUser(userId: string) {
   return db
     .select()

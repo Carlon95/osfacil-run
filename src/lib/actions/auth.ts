@@ -23,6 +23,8 @@ export async function signUp(
     businessName: formData.get("businessName"),
     email: formData.get("email"),
     phone: formData.get("phone"),
+    profession: formData.get("profession"),
+    professionOther: formData.get("professionOther"),
     password: formData.get("password"),
   });
 
@@ -30,7 +32,11 @@ export async function signUp(
     return { error: parsed.error.issues[0]?.message ?? "Dados inválidos" };
   }
 
-  const { name, businessName, email, phone, password } = parsed.data;
+  const { name, businessName, email, phone, profession, professionOther, password } =
+    parsed.data;
+
+  const finalProfession =
+    profession === "outro" ? professionOther || null : profession || null;
 
   const existing = await db
     .select({ id: users.id })
@@ -51,6 +57,7 @@ export async function signUp(
       businessName: businessName || null,
       email: email.toLowerCase(),
       phone: phone || null,
+      profession: finalProfession,
       passwordHash,
     })
     .returning({ id: users.id });

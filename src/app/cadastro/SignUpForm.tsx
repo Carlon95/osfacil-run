@@ -1,11 +1,13 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import Link from "next/link";
 import { signUp } from "@/lib/actions/auth";
+import { PROFESSIONS } from "@/lib/professions";
 
 export function SignUpForm() {
   const [state, formAction, pending] = useActionState(signUp, null);
+  const [profession, setProfession] = useState("");
 
   return (
     <form action={formAction} className="mt-8 space-y-4">
@@ -68,6 +70,35 @@ export function SignUpForm() {
           className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-ink"
           placeholder="(11) 99999-9999"
         />
+      </div>
+      <div>
+        <label className="text-sm font-medium text-ink" htmlFor="profession">
+          Sua profissão{" "}
+          <span className="font-normal text-ink-soft">
+            (opcional — usamos pra sugerir peças na hora de criar a OS)
+          </span>
+        </label>
+        <select
+          id="profession"
+          name="profession"
+          value={profession}
+          onChange={(e) => setProfession(e.target.value)}
+          className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-ink"
+        >
+          <option value="">Selecione…</option>
+          {PROFESSIONS.map((p) => (
+            <option key={p.value} value={p.value}>
+              {p.label}
+            </option>
+          ))}
+        </select>
+        {profession === "outro" && (
+          <input
+            name="professionOther"
+            className="mt-2 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-ink"
+            placeholder="Qual?"
+          />
+        )}
       </div>
       <div>
         <label className="text-sm font-medium text-ink" htmlFor="password">

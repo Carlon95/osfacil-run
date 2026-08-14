@@ -3,13 +3,16 @@
 import { useActionState, useMemo, useState } from "react";
 import { createServiceOrder } from "@/lib/actions/service-orders";
 import { formatMoney } from "@/lib/format";
+import { ItemSuggestions } from "./ItemSuggestions";
 
 type Item = { description: string; quantity: string; unitPrice: string };
 
 export function NewOsForm({
   clients,
+  profession,
 }: {
   clients: { id: string; name: string }[];
+  profession: string | null;
 }) {
   const [state, formAction, pending] = useActionState(
     createServiceOrder,
@@ -34,6 +37,10 @@ export function NewOsForm({
 
   function addItem() {
     setItems((prev) => [...prev, { description: "", quantity: "1", unitPrice: "0" }]);
+  }
+
+  function addSuggestedItem(description: string) {
+    setItems((prev) => [...prev, { description, quantity: "1", unitPrice: "0" }]);
   }
 
   function updateItem(index: number, field: keyof Item, value: string) {
@@ -189,6 +196,10 @@ export function NewOsForm({
           >
             + Adicionar item
           </button>
+        </div>
+
+        <div className="mt-3">
+          <ItemSuggestions profession={profession} onPick={addSuggestedItem} />
         </div>
 
         {items.length === 0 ? (

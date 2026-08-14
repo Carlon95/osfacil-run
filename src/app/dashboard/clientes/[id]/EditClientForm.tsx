@@ -1,23 +1,31 @@
 "use client";
 
-import { useActionState, useState } from "react";
-import { createClient } from "@/lib/actions/clients";
+import { useActionState } from "react";
+import { useRouter } from "next/navigation";
+import { updateClient } from "@/lib/actions/clients";
 import { FormField } from "@/components/FormField";
 
-export function NewClientForm() {
-  const [open, setOpen] = useState(false);
-  const [state, formAction, pending] = useActionState(createClient, null);
+type ClientData = {
+  id: string;
+  name: string;
+  phone: string | null;
+  email: string | null;
+  document: string | null;
+  zipCode: string | null;
+  address: string | null;
+  neighborhood: string | null;
+  city: string | null;
+  state: string | null;
+  notes: string | null;
+};
 
-  if (!open) {
-    return (
-      <button
-        onClick={() => setOpen(true)}
-        className="rounded-full bg-amber px-5 py-2.5 text-sm font-semibold text-ink hover:bg-amber-dark"
-      >
-        + Novo cliente
-      </button>
-    );
-  }
+export function EditClientForm({ client }: { client: ClientData }) {
+  const router = useRouter();
+  const updateClientWithId = updateClient.bind(null, client.id);
+  const [state, formAction, pending] = useActionState(
+    updateClientWithId,
+    null
+  );
 
   return (
     <form
@@ -41,12 +49,29 @@ export function NewClientForm() {
             <input
               name="name"
               required
+              defaultValue={client.name}
               className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-ink"
             />
           </div>
-          <FormField label="Telefone" name="phone" placeholder="(11) 99999-9999" />
-          <FormField label="E-mail" name="email" type="email" placeholder="cliente@exemplo.com" />
-          <FormField label="CPF/CNPJ" name="document" placeholder="000.000.000-00" />
+          <FormField
+            label="Telefone"
+            name="phone"
+            placeholder="(11) 99999-9999"
+            defaultValue={client.phone ?? undefined}
+          />
+          <FormField
+            label="E-mail"
+            name="email"
+            type="email"
+            placeholder="cliente@exemplo.com"
+            defaultValue={client.email ?? undefined}
+          />
+          <FormField
+            label="CPF/CNPJ"
+            name="document"
+            placeholder="000.000.000-00"
+            defaultValue={client.document ?? undefined}
+          />
         </div>
       </section>
 
@@ -56,17 +81,38 @@ export function NewClientForm() {
           Endereço
         </h3>
         <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <FormField label="CEP" name="zipCode" placeholder="00000-000" className="sm:col-span-1" />
+          <FormField
+            label="CEP"
+            name="zipCode"
+            placeholder="00000-000"
+            className="sm:col-span-1"
+            defaultValue={client.zipCode ?? undefined}
+          />
           <FormField
             label="Endereço (rua e número)"
             name="address"
             placeholder="Rua das Flores, 123"
             className="sm:col-span-1"
+            defaultValue={client.address ?? undefined}
           />
-          <FormField label="Bairro" name="neighborhood" />
+          <FormField
+            label="Bairro"
+            name="neighborhood"
+            defaultValue={client.neighborhood ?? undefined}
+          />
           <div className="grid grid-cols-3 gap-4">
-            <FormField label="Cidade" name="city" className="col-span-2" />
-            <FormField label="UF" name="state" placeholder="SP" />
+            <FormField
+              label="Cidade"
+              name="city"
+              className="col-span-2"
+              defaultValue={client.city ?? undefined}
+            />
+            <FormField
+              label="UF"
+              name="state"
+              placeholder="SP"
+              defaultValue={client.state ?? undefined}
+            />
           </div>
         </div>
       </section>
@@ -80,6 +126,7 @@ export function NewClientForm() {
         <textarea
           name="notes"
           rows={2}
+          defaultValue={client.notes ?? undefined}
           className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-ink"
           placeholder="Referência de acesso, preferência de horário, etc."
         />
@@ -91,11 +138,11 @@ export function NewClientForm() {
           disabled={pending}
           className="rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-paper hover:bg-ink-soft disabled:opacity-60"
         >
-          {pending ? "Salvando…" : "Salvar cliente"}
+          {pending ? "Salvando…" : "Salvar alterações"}
         </button>
         <button
           type="button"
-          onClick={() => setOpen(false)}
+          onClick={() => router.push("/dashboard/clientes")}
           className="text-sm font-medium text-ink-soft hover:text-ink"
         >
           Cancelar
