@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth";
+import { getSession, clearSessionCookie } from "@/lib/auth";
 import { getUserById } from "@/lib/queries";
 import { logOut } from "@/lib/actions/auth";
 
@@ -13,7 +13,13 @@ export default async function DashboardLayout({
   if (!session) redirect("/login");
 
   const user = await getUserById(session.userId);
-  if (!user) redirect("/login");
+  if (!user) {
+    // Sessão assinada corretamente, mas o usuário não existe mais
+    // (ex: banco foi resetado). Limpa o cookie órfão pra não entrar
+    // em loop de redirecionamento entre /login e /dashboard.
+    await clearSessionCookie();
+    redirect("/login");
+  }
 
   return (
     <div className="min-h-screen bg-paper-dim">
