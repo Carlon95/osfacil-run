@@ -108,3 +108,86 @@ export function getSuggestedItems(profession: string | null): string[] {
   if (!profession) return [];
   return SUGGESTED_ITEMS[profession] ?? [];
 }
+
+export const SUGGESTED_SERVICE_TYPES: Record<string, string[]> = {
+  eletricista: [
+    "Instalação elétrica",
+    "Troca de disjuntor",
+    "Manutenção de quadro elétrico",
+    "Instalação de chuveiro elétrico",
+    "Troca de tomada/interruptor",
+    "Detecção de curto-circuito",
+  ],
+  encanador: [
+    "Conserto de vazamento",
+    "Desentupimento",
+    "Troca de registro/torneira",
+    "Instalação hidráulica",
+    "Manutenção de caixa d'água",
+    "Instalação de válvula de descarga",
+  ],
+  ar_condicionado: [
+    "Instalação de ar-condicionado",
+    "Manutenção preventiva",
+    "Recarga de gás",
+    "Limpeza de filtros",
+    "Conserto de vazamento de água",
+    "Troca de peça",
+  ],
+  borracheiro: [
+    "Troca de pneu",
+    "Reparo de furo",
+    "Balanceamento",
+    "Alinhamento",
+    "Calibragem",
+    "Troca de câmara de ar",
+  ],
+  mecanico_tratores: [
+    "Manutenção preventiva",
+    "Troca de óleo",
+    "Reparo de embreagem",
+    "Troca de rolamento/retentor",
+    "Revisão geral",
+    "Reparo hidráulico",
+  ],
+  mecanico_auto: [
+    "Troca de óleo",
+    "Revisão geral",
+    "Reparo no freio",
+    "Troca de correia dentada",
+    "Diagnóstico eletrônico",
+    "Alinhamento e balanceamento",
+  ],
+  eletrodomesticos: [
+    "Conserto de geladeira",
+    "Conserto de máquina de lavar",
+    "Manutenção preventiva",
+    "Troca de peça",
+    "Instalação",
+  ],
+  marceneiro: [
+    "Fabricação de móvel sob medida",
+    "Reparo de móvel",
+    "Instalação de móvel planejado",
+    "Troca de dobradiça/puxador",
+    "Restauração",
+  ],
+  serralheiro: [
+    "Fabricação de portão",
+    "Solda estrutural",
+    "Instalação de grade",
+    "Conserto de fechadura",
+    "Reforma de estrutura metálica",
+  ],
+  montador_moveis: [
+    "Montagem de móveis",
+    "Desmontagem para mudança",
+    "Instalação de prateleiras",
+    "Ajuste/reparo de móvel montado",
+  ],
+};
+
+export function getSuggestedServiceTypes(profession: string | null): string[] {
+  if (!profession) return [];
+  return SUGGESTED_SERVICE_TYPES[profession] ?? [];
+}

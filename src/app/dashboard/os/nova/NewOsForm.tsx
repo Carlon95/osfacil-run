@@ -4,6 +4,7 @@ import { useActionState, useMemo, useState } from "react";
 import { createServiceOrder } from "@/lib/actions/service-orders";
 import { formatMoney } from "@/lib/format";
 import { ItemSuggestions } from "./ItemSuggestions";
+import { getSuggestedServiceTypes } from "@/lib/professions";
 
 type Item = { description: string; quantity: string; unitPrice: string };
 
@@ -23,6 +24,12 @@ export function NewOsForm({
   const [clientId, setClientId] = useState(clients[0]?.id ?? "");
   const [items, setItems] = useState<Item[]>([]);
   const [laborCost, setLaborCost] = useState("0");
+  const [serviceType, setServiceType] = useState("");
+
+  const serviceTypeSuggestions = useMemo(
+    () => getSuggestedServiceTypes(profession),
+    [profession]
+  );
 
   const itemsTotal = useMemo(
     () =>
@@ -155,9 +162,25 @@ export function NewOsForm({
             <input
               name="serviceType"
               required
+              value={serviceType}
+              onChange={(e) => setServiceType(e.target.value)}
               className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-ink"
               placeholder="Ex: Troca de disjuntor, Conserto de vazamento…"
             />
+            {serviceTypeSuggestions.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {serviceTypeSuggestions.map((suggestion) => (
+                  <button
+                    key={suggestion}
+                    type="button"
+                    onClick={() => setServiceType(suggestion)}
+                    className="rounded-full border border-line px-3 py-1 text-xs font-medium text-ink-soft hover:border-ink hover:text-ink"
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium text-ink">Descrição</label>
