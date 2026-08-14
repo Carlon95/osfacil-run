@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #1c1b1a;
+  --color-ink-soft: #4a4844;
+  --color-paper: #faf9f5;
+  --color-paper-dim: #f0ede4;
+  --color-line: #ddd8cb;
+
+  --color-amber: #ffb703;
+  --color-amber-dark: #c98a00;
+
+  --color-status-open: #d9730d;
+  --color-status-open-bg: #fdf0e2;
+  --color-status-progress: #2563eb;
+  --color-status-progress-bg: #e8effd;
+  --color-status-done: #15803d;
+  --color-status-done-bg: #e6f4ea;
+  --color-status-cancelled: #78716c;
+  --color-status-cancelled-bg: #f0efec;
+
+  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Courier New", monospace;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+}
+
+/* Estilo de impressão: some com tudo que não é a OS em si */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .print-sheet {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+  body {
+    background: white !important;
+  }
+}
