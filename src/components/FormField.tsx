@@ -28,7 +28,7 @@ export function FormField({
         type={type}
         placeholder={placeholder}
         defaultValue={defaultValue}
-        className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-ink"
+        className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none transition-colors focus:border-ink focus:ring-2 focus:ring-amber/30"
       />
     </div>
   );

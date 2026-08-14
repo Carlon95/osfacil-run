@@ -50,7 +50,7 @@ export function EditClientForm({ client }: { client: ClientData }) {
               name="name"
               required
               defaultValue={client.name}
-              className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-ink"
+              className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none transition-colors focus:border-ink focus:ring-2 focus:ring-amber/30"
             />
           </div>
           <FormField
@@ -127,7 +127,7 @@ export function EditClientForm({ client }: { client: ClientData }) {
           name="notes"
           rows={2}
           defaultValue={client.notes ?? undefined}
-          className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-ink"
+          className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none transition-colors focus:border-ink focus:ring-2 focus:ring-amber/30"
           placeholder="Referência de acesso, preferência de horário, etc."
         />
       </section>
@@ -143,7 +143,7 @@ export function EditClientForm({ client }: { client: ClientData }) {
         <button
           type="button"
           onClick={() => router.push("/dashboard/clientes")}
-          className="text-sm font-medium text-ink-soft hover:text-ink"
+          className="rounded-full px-4 py-2.5 text-sm font-medium text-ink-soft hover:bg-paper-dim hover:text-ink"
         >
           Cancelar
         </button>

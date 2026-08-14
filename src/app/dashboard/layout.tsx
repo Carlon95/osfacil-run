@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { getUserById } from "@/lib/queries";
 import { logOut } from "@/lib/actions/auth";
+import { DashboardNav } from "@/components/DashboardNav";
 
 export default async function DashboardLayout({
   children,
@@ -42,21 +43,7 @@ export default async function DashboardLayout({
             </form>
           </div>
         </div>
-        <nav className="mx-auto flex max-w-5xl gap-1 px-5 pb-2">
-          {[
-            { href: "/dashboard", label: "Resumo" },
-            { href: "/dashboard/os", label: "Ordens de serviço" },
-            { href: "/dashboard/clientes", label: "Clientes" },
-          ].map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="rounded-full px-3 py-1.5 text-sm font-medium text-ink-soft hover:bg-paper-dim hover:text-ink"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        <DashboardNav />
       </header>
       <div className="mx-auto max-w-5xl px-5 py-8">{children}</div>
     </div>

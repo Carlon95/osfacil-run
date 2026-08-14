@@ -29,7 +29,7 @@ export function OsActions({
             updateServiceOrderStatus(orderId, e.target.value);
           })
         }
-        className="rounded-full border border-line bg-paper px-3.5 py-2 text-sm font-medium text-ink outline-none focus:border-ink"
+        className="rounded-full border border-line bg-paper px-3.5 py-2 text-sm font-medium text-ink outline-none transition-colors focus:border-ink focus:ring-2 focus:ring-amber/30"
       >
         {OPTIONS.map((o) => (
           <option key={o.value} value={o.value}>

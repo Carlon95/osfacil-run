@@ -68,7 +68,7 @@ export function ItemSuggestions({
           <select
             value={selected}
             onChange={(e) => setSelected(e.target.value)}
-            className="rounded-md border border-line px-2.5 py-1.5 text-sm outline-none focus:border-ink"
+            className="rounded-md border border-line px-2.5 py-1.5 text-sm outline-none transition-colors focus:border-ink focus:ring-2 focus:ring-amber/30"
           >
             <option value="">Selecione…</option>
             {PROFESSIONS.map((p) => (
@@ -82,7 +82,7 @@ export function ItemSuggestions({
               value={otherText}
               onChange={(e) => setOtherText(e.target.value)}
               placeholder="Qual?"
-              className="rounded-md border border-line px-2.5 py-1.5 text-sm outline-none focus:border-ink"
+              className="rounded-md border border-line px-2.5 py-1.5 text-sm outline-none transition-colors focus:border-ink focus:ring-2 focus:ring-amber/30"
             />
           )}
           <button

@@ -49,7 +49,7 @@ export async function createClient(
   });
 
   revalidatePath("/dashboard/clientes");
-  redirect("/dashboard/clientes");
+  redirect("/dashboard/clientes?saved=criado");
 }
 
 export async function updateClient(
@@ -95,5 +95,5 @@ export async function updateClient(
 
   revalidatePath("/dashboard/clientes");
   revalidatePath(`/dashboard/clientes/${clientId}`);
-  redirect("/dashboard/clientes");
+  redirect("/dashboard/clientes?saved=atualizado");
 }

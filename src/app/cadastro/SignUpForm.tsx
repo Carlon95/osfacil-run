@@ -25,7 +25,7 @@ export function SignUpForm() {
           name="name"
           type="text"
           required
-          className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-ink"
+          className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none transition-colors focus:border-ink focus:ring-2 focus:ring-amber/30"
           placeholder="Ex: João Pereira"
         />
       </div>
@@ -41,7 +41,7 @@ export function SignUpForm() {
           id="businessName"
           name="businessName"
           type="text"
-          className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-ink"
+          className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none transition-colors focus:border-ink focus:ring-2 focus:ring-amber/30"
           placeholder="Ex: Elétrica Pereira"
         />
       </div>
@@ -54,7 +54,7 @@ export function SignUpForm() {
           name="email"
           type="email"
           required
-          className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-ink"
+          className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none transition-colors focus:border-ink focus:ring-2 focus:ring-amber/30"
           placeholder="voce@exemplo.com"
         />
       </div>
@@ -67,7 +67,7 @@ export function SignUpForm() {
           id="phone"
           name="phone"
           type="tel"
-          className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-ink"
+          className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none transition-colors focus:border-ink focus:ring-2 focus:ring-amber/30"
           placeholder="(11) 99999-9999"
         />
       </div>
@@ -83,7 +83,7 @@ export function SignUpForm() {
           name="profession"
           value={profession}
           onChange={(e) => setProfession(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-ink"
+          className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none transition-colors focus:border-ink focus:ring-2 focus:ring-amber/30"
         >
           <option value="">Selecione…</option>
           {PROFESSIONS.map((p) => (
@@ -95,7 +95,7 @@ export function SignUpForm() {
         {profession === "outro" && (
           <input
             name="professionOther"
-            className="mt-2 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-ink"
+            className="mt-2 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none transition-colors focus:border-ink focus:ring-2 focus:ring-amber/30"
             placeholder="Qual?"
           />
         )}
@@ -110,7 +110,7 @@ export function SignUpForm() {
           type="password"
           required
           minLength={6}
-          className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-ink"
+          className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none transition-colors focus:border-ink focus:ring-2 focus:ring-amber/30"
           placeholder="Mínimo 6 caracteres"
         />
       </div>

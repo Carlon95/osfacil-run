@@ -41,7 +41,7 @@ export function NewClientForm() {
             <input
               name="name"
               required
-              className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-ink"
+              className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none transition-colors focus:border-ink focus:ring-2 focus:ring-amber/30"
             />
           </div>
           <FormField label="Telefone" name="phone" placeholder="(11) 99999-9999" />
@@ -80,7 +80,7 @@ export function NewClientForm() {
         <textarea
           name="notes"
           rows={2}
-          className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none focus:border-ink"
+          className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none transition-colors focus:border-ink focus:ring-2 focus:ring-amber/30"
           placeholder="Referência de acesso, preferência de horário, etc."
         />
       </section>
@@ -96,7 +96,7 @@ export function NewClientForm() {
         <button
           type="button"
           onClick={() => setOpen(false)}
-          className="text-sm font-medium text-ink-soft hover:text-ink"
+          className="rounded-full px-4 py-2.5 text-sm font-medium text-ink-soft hover:bg-paper-dim hover:text-ink"
         >
           Cancelar
         </button>
