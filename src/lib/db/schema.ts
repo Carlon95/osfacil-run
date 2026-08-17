@@ -10,6 +10,7 @@ export const users = sqliteTable("users", {
   email: text("email").notNull().unique(),
   phone: text("phone"),
   profession: text("profession"),
+  logoUrl: text("logo_url"),
   passwordHash: text("password_hash").notNull(),
   // trialing | active | past_due | canceled | incomplete
   subscriptionStatus: text("subscription_status").notNull().default("trialing"),

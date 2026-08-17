@@ -43,13 +43,23 @@ export default async function ServiceOrderDetailPage({
 
       <div className="print-sheet mx-auto max-w-2xl rounded-2xl border border-line bg-paper p-8 shadow-[0_20px_50px_-30px_rgba(28,27,26,0.4)]">
         <div className="flex items-start justify-between border-b border-dashed border-line pb-5">
-          <div>
-            <p className="font-display text-xl font-bold text-ink">
-              {user.businessName || user.name}
-            </p>
-            {user.phone && (
-              <p className="text-sm text-ink-soft">{user.phone}</p>
+          <div className="flex items-center gap-3">
+            {user.logoUrl && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={user.logoUrl}
+                alt=""
+                className="h-12 w-12 shrink-0 object-contain"
+              />
             )}
+            <div>
+              <p className="font-display text-xl font-bold text-ink">
+                {user.businessName || user.name}
+              </p>
+              {user.phone && (
+                <p className="text-sm text-ink-soft">{user.phone}</p>
+              )}
+            </div>
           </div>
           <div className="text-right">
             <p className="font-mono text-sm text-ink-soft">

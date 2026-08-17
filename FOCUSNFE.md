@@ -16,7 +16,7 @@ um ajuste fino que só aparece na hora de testar.
 
 ## 2. Configurar seus dados fiscais no app
 
-Antes de emitir qualquer nota, entre em **Dados fiscais** (no menu do
+Antes de emitir qualquer nota, entre em **Perfil** (no menu do
 app) e preencha:
 
 - **CNPJ**
