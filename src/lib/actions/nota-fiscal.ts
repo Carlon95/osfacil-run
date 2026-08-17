@@ -126,7 +126,10 @@ export async function consultarStatusNotaFiscal(
       .set({
         nfStatus: result.status,
         nfNumber: result.numero ?? null,
-        nfPdfUrl: result.url_danfse ?? null,
+        nfPdfUrl:
+          result.url_danfse && result.url_danfse.startsWith("https://")
+            ? result.url_danfse
+            : null,
         nfError:
           result.erros?.map((e) => e.mensagem).join("; ") ||
           result.mensagem_sefaz ||

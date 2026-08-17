@@ -96,7 +96,7 @@ export function NotaFiscalSection({
               Número: {nfNumber}
             </p>
           )}
-          {nfPdfUrl && (
+          {nfPdfUrl && nfPdfUrl.startsWith("https://") && (
             <a
               href={nfPdfUrl}
               target="_blank"
