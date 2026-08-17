@@ -7,7 +7,7 @@ export const signUpSchema = z.object({
   phone: z.string().trim().optional(),
   profession: z.string().trim().optional(),
   professionOther: z.string().trim().optional(),
-  password: z.string().min(6, "A senha precisa ter pelo menos 6 caracteres"),
+  password: z.string().min(8, "A senha precisa ter pelo menos 8 caracteres"),
 });
 
 export const logInSchema = z.object({

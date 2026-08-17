@@ -10,8 +10,41 @@ import { fiscalDataSchema } from "@/lib/validators";
 
 export type ActionState = { error?: string; success?: boolean } | null;
 
-const ALLOWED_LOGO_TYPES = ["image/png", "image/jpeg", "image/webp", "image/svg+xml"];
+// SVG não entra: pode conter script embutido. PNG/JPEG/WEBP são formatos
+// puramente raster, sem capacidade nenhuma de executar código.
+const ALLOWED_LOGO_TYPES = ["image/png", "image/jpeg", "image/webp"];
 const MAX_LOGO_BYTES = 1 * 1024 * 1024; // 1 MB
+
+// Confere os primeiros bytes do arquivo de verdade — o "type" que o
+// navegador manda é só uma etiqueta que dá pra falsificar facilmente.
+function detectRealImageType(bytes: Uint8Array): string | null {
+  if (
+    bytes.length >= 8 &&
+    bytes[0] === 0x89 &&
+    bytes[1] === 0x50 &&
+    bytes[2] === 0x4e &&
+    bytes[3] === 0x47
+  ) {
+    return "image/png";
+  }
+  if (bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) {
+    return "image/jpeg";
+  }
+  if (
+    bytes.length >= 12 &&
+    bytes[0] === 0x52 &&
+    bytes[1] === 0x49 &&
+    bytes[2] === 0x46 &&
+    bytes[3] === 0x46 &&
+    bytes[8] === 0x57 &&
+    bytes[9] === 0x45 &&
+    bytes[10] === 0x42 &&
+    bytes[11] === 0x50
+  ) {
+    return "image/webp";
+  }
+  return null;
+}
 
 export async function updateBusinessProfile(
   _prevState: ActionState,
@@ -50,7 +83,7 @@ export async function updateLogo(
   }
 
   if (!ALLOWED_LOGO_TYPES.includes(file.type)) {
-    return { error: "Use uma imagem PNG, JPEG, WEBP ou SVG" };
+    return { error: "Use uma imagem PNG, JPEG ou WEBP" };
   }
 
   if (file.size > MAX_LOGO_BYTES) {
@@ -60,8 +93,19 @@ export async function updateLogo(
   }
 
   const bytes = await file.arrayBuffer();
-  const base64 = Buffer.from(bytes).toString("base64");
-  const dataUrl = `data:${file.type};base64,${base64}`;
+  const byteArray = new Uint8Array(bytes);
+
+  const realType = detectRealImageType(byteArray);
+  if (!realType || !ALLOWED_LOGO_TYPES.includes(realType)) {
+    return {
+      error:
+        "Esse arquivo não parece ser uma imagem válida (o conteúdo não bate com uma imagem PNG, JPEG ou WEBP de verdade).",
+    };
+  }
+
+  const base64 = Buffer.from(byteArray).toString("base64");
+  // Usa o tipo real detectado nos bytes, não o que o navegador declarou.
+  const dataUrl = `data:${realType};base64,${base64}`;
 
   await db
     .update(users)

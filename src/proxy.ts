@@ -7,7 +7,7 @@ async function isValidSession(token: string | undefined) {
   if (!token) return false;
   try {
     const secret = new TextEncoder().encode(process.env.AUTH_SECRET);
-    await jwtVerify(token, secret);
+    await jwtVerify(token, secret, { algorithms: ["HS256"] });
     return true;
   } catch {
     return false;

@@ -24,6 +24,9 @@ export const users = sqliteTable("users", {
   optanteSimplesNacional: integer("optante_simples_nacional", { mode: "boolean" }),
   codigoServicoMunicipal: text("codigo_servico_municipal"),
   aliquotaIss: real("aliquota_iss"),
+  // Proteção contra força bruta no login
+  failedLoginAttempts: integer("failed_login_attempts").notNull().default(0),
+  lockedUntil: text("locked_until"),
   createdAt: text("created_at")
     .notNull()
     .default(sql`(current_timestamp)`),

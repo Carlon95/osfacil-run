@@ -109,9 +109,9 @@ export function SignUpForm() {
           name="password"
           type="password"
           required
-          minLength={6}
+          minLength={8}
           className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2.5 text-ink outline-none transition-colors focus:border-ink focus:ring-2 focus:ring-amber/30"
-          placeholder="Mínimo 6 caracteres"
+          placeholder="Mínimo 8 caracteres"
         />
       </div>
       <button

@@ -49,7 +49,9 @@ export async function getSession(): Promise<{ userId: string } | null> {
   if (!token) return null;
 
   try {
-    const { payload } = await jwtVerify(token, getSecretKey());
+    const { payload } = await jwtVerify(token, getSecretKey(), {
+      algorithms: ["HS256"],
+    });
     if (typeof payload.userId !== "string") return null;
     return { userId: payload.userId };
   } catch {
@@ -59,7 +61,9 @@ export async function getSession(): Promise<{ userId: string } | null> {
 
 export async function verifySessionToken(token: string) {
   try {
-    const { payload } = await jwtVerify(token, getSecretKey());
+    const { payload } = await jwtVerify(token, getSecretKey(), {
+      algorithms: ["HS256"],
+    });
     return typeof payload.userId === "string";
   } catch {
     return false;

@@ -15,6 +15,9 @@ import {
 
 export type ActionState = { error?: string } | null;
 
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOCKOUT_MINUTES = 15;
+
 export async function signUp(
   _prevState: ActionState,
   formData: FormData
@@ -89,13 +92,52 @@ export async function logIn(
     .where(eq(users.email, email.toLowerCase()))
     .get();
 
+  // Mensagem genérica em qualquer caso de falha, pra não revelar se o
+  // e-mail existe ou não.
+  const GENERIC_ERROR = "E-mail ou senha incorretos";
+
   if (!user) {
-    return { error: "E-mail ou senha incorretos" };
+    return { error: GENERIC_ERROR };
+  }
+
+  if (user.lockedUntil && new Date(user.lockedUntil).getTime() > Date.now()) {
+    const minutesLeft = Math.ceil(
+      (new Date(user.lockedUntil).getTime() - Date.now()) / 60000
+    );
+    return {
+      error: `Muitas tentativas erradas. Tente de novo em ${minutesLeft} minuto${minutesLeft === 1 ? "" : "s"}.`,
+    };
   }
 
   const valid = await verifyPassword(password, user.passwordHash);
+
   if (!valid) {
-    return { error: "E-mail ou senha incorretos" };
+    const attempts = user.failedLoginAttempts + 1;
+    const shouldLock = attempts >= MAX_LOGIN_ATTEMPTS;
+
+    await db
+      .update(users)
+      .set({
+        failedLoginAttempts: attempts,
+        lockedUntil: shouldLock
+          ? new Date(Date.now() + LOCKOUT_MINUTES * 60 * 1000).toISOString()
+          : null,
+      })
+      .where(eq(users.id, user.id));
+
+    return {
+      error: shouldLock
+        ? `Muitas tentativas erradas. Tente de novo em ${LOCKOUT_MINUTES} minutos.`
+        : GENERIC_ERROR,
+    };
+  }
+
+  // Login certo: zera o contador de tentativas
+  if (user.failedLoginAttempts > 0 || user.lockedUntil) {
+    await db
+      .update(users)
+      .set({ failedLoginAttempts: 0, lockedUntil: null })
+      .where(eq(users.id, user.id));
   }
 
   await createSessionCookie(user.id);

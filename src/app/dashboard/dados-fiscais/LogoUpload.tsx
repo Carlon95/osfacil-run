@@ -55,7 +55,7 @@ export function LogoUpload({ logoUrl }: { logoUrl: string | null }) {
             ref={fileInputRef}
             type="file"
             name="logo"
-            accept="image/png,image/jpeg,image/webp,image/svg+xml"
+            accept="image/png,image/jpeg,image/webp"
             onChange={handleFileChange}
             className="text-sm text-ink-soft file:mr-3 file:rounded-full file:border-0 file:bg-paper-dim file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-ink hover:file:bg-line"
           />

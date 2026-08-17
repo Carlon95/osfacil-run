@@ -53,6 +53,21 @@ export async function createServiceOrder(
 
   let clientId = data.clientId;
 
+  if (clientId) {
+    // Confere que o cliente escolhido realmente pertence a quem está
+    // logado — sem isso, dava pra vincular a OS ao cliente de outra
+    // conta só manipulando o valor enviado no formulário.
+    const ownedClient = await db
+      .select({ id: clients.id })
+      .from(clients)
+      .where(and(eq(clients.id, clientId), eq(clients.userId, session.userId)))
+      .get();
+
+    if (!ownedClient) {
+      return { error: "Cliente inválido" };
+    }
+  }
+
   if (!clientId) {
     if (!data.newClientName || data.newClientName.length < 2) {
       return { error: "Selecione um cliente ou informe o nome de um novo" };
