@@ -5,7 +5,7 @@ export default function SignUpPage() {
   return (
     <AuthShell
       title="Criar conta"
-      subtitle="Leva menos de um minuto. Grátis pra começar."
+      subtitle="7 dias grátis, sem cartão de crédito."
     >
       <SignUpForm />
     </AuthShell>

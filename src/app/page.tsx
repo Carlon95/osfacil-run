@@ -70,7 +70,7 @@ export default function Home() {
               href="/cadastro"
               className="rounded-full bg-amber px-6 py-3 text-sm font-semibold text-ink hover:bg-amber-dark"
             >
-              Começar agora — é grátis
+              Começar agora — 7 dias grátis
             </Link>
             <Link
               href="/login"
@@ -171,7 +171,7 @@ export default function Home() {
               Sua próxima OS pode sair em 60 segundos
             </h2>
             <p className="mt-2 text-ink-soft">
-              Grátis para começar. Sem cartão de crédito.
+              7 dias grátis, sem cartão de crédito. Depois, R$ 39,90/mês.
             </p>
           </div>
           <Link
