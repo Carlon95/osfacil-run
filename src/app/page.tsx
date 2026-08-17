@@ -183,8 +183,16 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="mx-auto max-w-6xl px-6 py-8 text-xs text-ink-soft">
-        OS Fácil — feito para quem presta serviço de verdade.
+      <footer className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-8 text-xs text-ink-soft">
+        <span>OS Fácil — feito para quem presta serviço de verdade.</span>
+        <div className="flex gap-4">
+          <Link href="/termos" className="hover:text-ink">
+            Termos de Uso
+          </Link>
+          <Link href="/privacidade" className="hover:text-ink">
+            Privacidade
+          </Link>
+        </div>
       </footer>
     </main>
   );

@@ -66,3 +66,12 @@ export const fiscalDataSchema = z.object({
   codigoServicoMunicipal: z.string().trim().optional(),
   aliquotaIss: z.string().trim().optional(),
 });
+
+export const requestPasswordResetSchema = z.object({
+  email: z.string().trim().email("E-mail inválido"),
+});
+
+export const resetPasswordSchema = z.object({
+  token: z.string().min(1, "Link inválido"),
+  password: z.string().min(8, "A senha precisa ter pelo menos 8 caracteres"),
+});

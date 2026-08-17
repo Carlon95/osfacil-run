@@ -27,6 +27,9 @@ export const users = sqliteTable("users", {
   // Proteção contra força bruta no login
   failedLoginAttempts: integer("failed_login_attempts").notNull().default(0),
   lockedUntil: text("locked_until"),
+  // Redefinição de senha
+  resetToken: text("reset_token"),
+  resetTokenExpiresAt: text("reset_token_expires_at"),
   createdAt: text("created_at")
     .notNull()
     .default(sql`(current_timestamp)`),

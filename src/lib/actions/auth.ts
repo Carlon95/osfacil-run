@@ -1,17 +1,31 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { randomBytes } from "crypto";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
-import { signUpSchema, logInSchema } from "@/lib/validators";
+import {
+  signUpSchema,
+  logInSchema,
+  requestPasswordResetSchema,
+  resetPasswordSchema,
+} from "@/lib/validators";
 import { trialEndDate } from "@/lib/subscription";
+import { sendPasswordResetEmail } from "@/lib/email";
 import {
   createSessionCookie,
   clearSessionCookie,
   hashPassword,
   verifyPassword,
 } from "@/lib/auth";
+
+const RESET_TOKEN_HOURS = 1;
+const RESET_COOLDOWN_SECONDS = 60;
+
+function getAppUrl() {
+  return process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+}
 
 export type ActionState = { error?: string } | null;
 
@@ -147,4 +161,106 @@ export async function logIn(
 export async function logOut() {
   await clearSessionCookie();
   redirect("/login");
+}
+
+export async function requestPasswordReset(
+  _prevState: ActionState,
+  formData: FormData
+): Promise<ActionState> {
+  const parsed = requestPasswordResetSchema.safeParse({
+    email: formData.get("email"),
+  });
+
+  // Mensagem sempre genérica (mesmo em erro de validação simples), pra
+  // não revelar se um e-mail está cadastrado ou não.
+  const GENERIC_MESSAGE =
+    "Se esse e-mail estiver cadastrado, você vai receber um link pra redefinir a senha em instantes.";
+
+  if (!parsed.success) {
+    return { error: GENERIC_MESSAGE };
+  }
+
+  const user = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, parsed.data.email.toLowerCase()))
+    .get();
+
+  if (user) {
+    // Evita reenviar em sequência (spam do próprio botão, ou abuso)
+    const recentlyRequested =
+      user.resetTokenExpiresAt &&
+      new Date(user.resetTokenExpiresAt).getTime() - Date.now() >
+        (RESET_TOKEN_HOURS * 3600 - RESET_COOLDOWN_SECONDS) * 1000;
+
+    if (!recentlyRequested) {
+      const token = randomBytes(32).toString("hex");
+      const expiresAt = new Date(Date.now() + RESET_TOKEN_HOURS * 3600 * 1000);
+
+      await db
+        .update(users)
+        .set({
+          resetToken: token,
+          resetTokenExpiresAt: expiresAt.toISOString(),
+        })
+        .where(eq(users.id, user.id));
+
+      const resetUrl = `${getAppUrl()}/redefinir-senha?token=${token}`;
+
+      try {
+        await sendPasswordResetEmail(user.email, resetUrl);
+      } catch (err) {
+        console.error("Falha ao enviar e-mail de redefinição:", err);
+        // Não revela o erro pro usuário — evita expor detalhes internos
+        // e também evita confirmar se o e-mail existe.
+      }
+    }
+  }
+
+  return { error: GENERIC_MESSAGE };
+}
+
+export async function resetPassword(
+  _prevState: ActionState,
+  formData: FormData
+): Promise<ActionState> {
+  const parsed = resetPasswordSchema.safeParse({
+    token: formData.get("token"),
+    password: formData.get("password"),
+  });
+
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Dados inválidos" };
+  }
+
+  const user = await db
+    .select()
+    .from(users)
+    .where(eq(users.resetToken, parsed.data.token))
+    .get();
+
+  if (
+    !user ||
+    !user.resetTokenExpiresAt ||
+    new Date(user.resetTokenExpiresAt).getTime() < Date.now()
+  ) {
+    return {
+      error: "Link inválido ou expirado. Peça uma nova redefinição de senha.",
+    };
+  }
+
+  const passwordHash = await hashPassword(parsed.data.password);
+
+  await db
+    .update(users)
+    .set({
+      passwordHash,
+      resetToken: null,
+      resetTokenExpiresAt: null,
+      failedLoginAttempts: 0,
+      lockedUntil: null,
+    })
+    .where(eq(users.id, user.id));
+
+  redirect("/login?redefinida=1");
 }

@@ -28,9 +28,17 @@ export function LoginForm() {
         />
       </div>
       <div>
-        <label className="text-sm font-medium text-ink" htmlFor="password">
-          Senha
-        </label>
+        <div className="flex items-baseline justify-between">
+          <label className="text-sm font-medium text-ink" htmlFor="password">
+            Senha
+          </label>
+          <Link
+            href="/esqueci-senha"
+            className="text-xs font-medium text-ink-soft underline hover:text-ink"
+          >
+            Esqueceu a senha?
+          </Link>
+        </div>
         <input
           id="password"
           name="password"

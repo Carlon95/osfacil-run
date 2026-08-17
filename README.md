@@ -65,6 +65,18 @@ Emissão de NFS-e integrada via Focus NFe. Veja `FOCUSNFE.md` — precisa
 de conta lá, CNPJ, e alguns dados que variam por município (seu contador
 tem essas informações).
 
+## Recuperação de senha
+
+Via e-mail (Resend). Veja `RESEND.md` para configurar — sem isso
+configurado, o link "Esqueceu a senha?" não vai enviar e-mail (mas não
+quebra o resto do app).
+
+## Lançar oficialmente
+
+Quando estiver pronto pra ir ao mercado de verdade (não só testar), veja
+`LAUNCH.md` — cobre a parte legal/fiscal (CNPJ, termos de uso), técnica
+(domínio, modo produção) e de loja de apps, em ordem.
+
 ## App Android
 
 Já tem um projeto Android nativo pronto (pasta `android/`), gerado com

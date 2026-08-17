@@ -114,6 +114,17 @@ export function SignUpForm() {
           placeholder="Mínimo 8 caracteres"
         />
       </div>
+      <p className="text-center text-xs text-ink-soft">
+        Ao criar sua conta, você concorda com os{" "}
+        <Link href="/termos" className="underline">
+          Termos de Uso
+        </Link>{" "}
+        e a{" "}
+        <Link href="/privacidade" className="underline">
+          Política de Privacidade
+        </Link>
+        .
+      </p>
       <button
         type="submit"
         disabled={pending}
