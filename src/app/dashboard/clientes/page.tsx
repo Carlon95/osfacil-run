@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth";
 import { getClientsForUser } from "@/lib/queries";
+import { requireActiveUser } from "@/lib/access";
 import { NewClientForm } from "./NewClientForm";
 import { ConfirmationBanner } from "@/components/ConfirmationBanner";
 
@@ -17,11 +16,10 @@ export default async function ClientsPage({
 }: {
   searchParams: Promise<{ saved?: string }>;
 }) {
-  const session = await getSession();
-  if (!session) redirect("/login");
+  const user = await requireActiveUser();
 
   const { saved } = await searchParams;
-  const clients = await getClientsForUser(session.userId);
+  const clients = await getClientsForUser(user.id);
 
   return (
     <div>

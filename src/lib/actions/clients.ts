@@ -7,6 +7,8 @@ import { db } from "@/lib/db";
 import { clients } from "@/lib/db/schema";
 import { clientSchema } from "@/lib/validators";
 import { getSession } from "@/lib/auth";
+import { getUserById } from "@/lib/queries";
+import { hasActiveAccess } from "@/lib/subscription";
 
 export type ActionState = { error?: string } | null;
 
@@ -16,6 +18,10 @@ export async function createClient(
 ): Promise<ActionState> {
   const session = await getSession();
   if (!session) redirect("/login");
+
+  const currentUser = await getUserById(session.userId);
+  if (!currentUser) redirect("/api/auth/invalidate");
+  if (!hasActiveAccess(currentUser)) redirect("/dashboard/assinatura");
 
   const parsed = clientSchema.safeParse({
     name: formData.get("name"),

@@ -1,26 +1,23 @@
-import { redirect, notFound } from "next/navigation";
+import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getSession } from "@/lib/auth";
-import { getServiceOrderById, getUserById } from "@/lib/queries";
+import { getServiceOrderById } from "@/lib/queries";
+import { requireActiveUser } from "@/lib/access";
 import { StatusBadge } from "@/components/StatusBadge";
 import { formatDate, formatMoney } from "@/lib/format";
 import { OsActions } from "./OsActions";
+import { NotaFiscalSection } from "./NotaFiscalSection";
 
 export default async function ServiceOrderDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const session = await getSession();
-  if (!session) redirect("/login");
+  const user = await requireActiveUser();
 
   const { id } = await params;
-  const [order, user] = await Promise.all([
-    getServiceOrderById(session.userId, id),
-    getUserById(session.userId),
-  ]);
+  const order = await getServiceOrderById(user.id, id);
 
-  if (!order || !user) notFound();
+  if (!order) notFound();
 
   const itemsTotal = order.items.reduce(
     (sum, item) => sum + item.quantity * item.unitPrice,
@@ -37,7 +34,11 @@ export default async function ServiceOrderDetailPage({
         >
           ← Todas as OS
         </Link>
-        <OsActions orderId={order.id} currentStatus={order.status} />
+        <OsActions
+          orderId={order.id}
+          currentStatus={order.status}
+          archived={order.archived}
+        />
       </div>
 
       <div className="print-sheet mx-auto max-w-2xl rounded-2xl border border-line bg-paper p-8 shadow-[0_20px_50px_-30px_rgba(28,27,26,0.4)]">
@@ -57,8 +58,13 @@ export default async function ServiceOrderDetailPage({
             <p className="text-sm text-ink-soft">
               {formatDate(order.createdAt)}
             </p>
-            <div className="mt-1 no-print">
+            <div className="mt-1 flex flex-wrap items-center justify-end gap-1.5 no-print">
               <StatusBadge status={order.status} />
+              {order.archived && (
+                <span className="inline-flex items-center rounded-full bg-status-cancelled-bg px-2.5 py-1 text-xs font-semibold text-status-cancelled">
+                  Arquivada
+                </span>
+              )}
             </div>
           </div>
         </div>
@@ -156,6 +162,14 @@ export default async function ServiceOrderDetailPage({
           </div>
         </div>
       </div>
+
+      <NotaFiscalSection
+        orderId={order.id}
+        nfStatus={order.nfStatus}
+        nfNumber={order.nfNumber}
+        nfPdfUrl={order.nfPdfUrl}
+        nfError={order.nfError}
+      />
     </div>
   );
 }

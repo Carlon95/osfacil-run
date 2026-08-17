@@ -7,6 +7,8 @@ import { db } from "@/lib/db";
 import { clients, serviceOrders, serviceOrderItems } from "@/lib/db/schema";
 import { serviceOrderSchema, osStatusSchema } from "@/lib/validators";
 import { getSession } from "@/lib/auth";
+import { getUserById } from "@/lib/queries";
+import { hasActiveAccess } from "@/lib/subscription";
 
 export type ActionState = { error?: string } | null;
 
@@ -16,6 +18,10 @@ export async function createServiceOrder(
 ): Promise<ActionState> {
   const session = await getSession();
   if (!session) redirect("/login");
+
+  const currentUser = await getUserById(session.userId);
+  if (!currentUser) redirect("/api/auth/invalidate");
+  if (!hasActiveAccess(currentUser)) redirect("/dashboard/assinatura");
 
   let items: unknown = [];
   const itemsRaw = formData.get("itemsJson");
@@ -110,6 +116,25 @@ export async function updateServiceOrderStatus(
   await db
     .update(serviceOrders)
     .set({ status: parsedStatus.data, updatedAt: new Date().toISOString() })
+    .where(
+      and(
+        eq(serviceOrders.id, orderId),
+        eq(serviceOrders.userId, session.userId)
+      )
+    );
+
+  revalidatePath(`/dashboard/os/${orderId}`);
+  revalidatePath("/dashboard/os");
+  revalidatePath("/dashboard");
+}
+
+export async function setServiceOrderArchived(orderId: string, archived: boolean) {
+  const session = await getSession();
+  if (!session) redirect("/login");
+
+  await db
+    .update(serviceOrders)
+    .set({ archived, updatedAt: new Date().toISOString() })
     .where(
       and(
         eq(serviceOrders.id, orderId),

@@ -1,7 +1,7 @@
-import { redirect, notFound } from "next/navigation";
+import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getSession } from "@/lib/auth";
 import { getClientById } from "@/lib/queries";
+import { requireActiveUser } from "@/lib/access";
 import { EditClientForm } from "./EditClientForm";
 
 export default async function EditClientPage({
@@ -9,11 +9,10 @@ export default async function EditClientPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const session = await getSession();
-  if (!session) redirect("/login");
+  const user = await requireActiveUser();
 
   const { id } = await params;
-  const client = await getClientById(session.userId, id);
+  const client = await getClientById(user.id, id);
   if (!client) notFound();
 
   return (

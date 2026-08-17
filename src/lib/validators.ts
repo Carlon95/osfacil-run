@@ -57,3 +57,12 @@ export const osStatusSchema = z.enum([
   "CONCLUIDA",
   "CANCELADA",
 ]);
+
+export const fiscalDataSchema = z.object({
+  cnpj: z.string().trim().optional(),
+  inscricaoMunicipal: z.string().trim().optional(),
+  codigoMunicipio: z.string().trim().optional(),
+  optanteSimplesNacional: z.string().trim().optional(),
+  codigoServicoMunicipal: z.string().trim().optional(),
+  aliquotaIss: z.string().trim().optional(),
+});

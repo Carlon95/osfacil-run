@@ -1,17 +1,15 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth";
 import { getDashboardSummary, getServiceOrdersForUser } from "@/lib/queries";
 import { StatusBadge } from "@/components/StatusBadge";
 import { formatDate } from "@/lib/format";
+import { requireActiveUser } from "@/lib/access";
 
 export default async function DashboardPage() {
-  const session = await getSession();
-  if (!session) redirect("/login");
+  const user = await requireActiveUser();
 
   const [summary, recentOrders] = await Promise.all([
-    getDashboardSummary(session.userId),
-    getServiceOrdersForUser(session.userId),
+    getDashboardSummary(user.id),
+    getServiceOrdersForUser(user.id),
   ]);
 
   const recent = recentOrders.slice(0, 5);

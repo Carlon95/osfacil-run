@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth";
 import { getServiceOrdersForUser } from "@/lib/queries";
+import { requireActiveUser } from "@/lib/access";
 import { StatusBadge } from "@/components/StatusBadge";
 import { formatDate, formatMoney } from "@/lib/format";
 
@@ -16,13 +15,17 @@ const FILTERS = [
 export default async function ServiceOrdersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string }>;
+  searchParams: Promise<{ status?: string; arquivadas?: string }>;
 }) {
-  const session = await getSession();
-  if (!session) redirect("/login");
+  const user = await requireActiveUser();
 
-  const { status } = await searchParams;
-  const orders = await getServiceOrdersForUser(session.userId, status);
+  const { status, arquivadas } = await searchParams;
+  const showArchived = arquivadas === "1";
+  const orders = await getServiceOrdersForUser(
+    user.id,
+    showArchived ? undefined : status,
+    showArchived
+  );
 
   return (
     <div>
@@ -38,28 +41,45 @@ export default async function ServiceOrdersPage({
         </Link>
       </div>
 
-      <div className="mt-6 flex flex-wrap gap-2">
-        {FILTERS.map((f) => {
-          const isActive = (status ?? undefined) === f.value;
-          return (
-            <Link
-              key={f.label}
-              href={f.value ? `/dashboard/os?status=${f.value}` : "/dashboard/os"}
-              className={`rounded-full px-3.5 py-1.5 text-sm font-medium ${
-                isActive
-                  ? "bg-ink text-paper"
-                  : "border border-line bg-paper text-ink-soft hover:text-ink"
-              }`}
-            >
-              {f.label}
-            </Link>
-          );
-        })}
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap gap-2">
+          {!showArchived &&
+            FILTERS.map((f) => {
+              const isActive = (status ?? undefined) === f.value;
+              return (
+                <Link
+                  key={f.label}
+                  href={f.value ? `/dashboard/os?status=${f.value}` : "/dashboard/os"}
+                  className={`rounded-full px-3.5 py-1.5 text-sm font-medium ${
+                    isActive
+                      ? "bg-ink text-paper"
+                      : "border border-line bg-paper text-ink-soft hover:text-ink"
+                  }`}
+                >
+                  {f.label}
+                </Link>
+              );
+            })}
+        </div>
+        <Link
+          href={showArchived ? "/dashboard/os" : "/dashboard/os?arquivadas=1"}
+          className={`rounded-full px-3.5 py-1.5 text-sm font-medium ${
+            showArchived
+              ? "bg-ink text-paper"
+              : "border border-line bg-paper text-ink-soft hover:text-ink"
+          }`}
+        >
+          {showArchived ? "← Voltar" : "Arquivadas"}
+        </Link>
       </div>
 
       {orders.length === 0 ? (
         <div className="mt-6 rounded-2xl border border-dashed border-line bg-paper p-8 text-center">
-          <p className="text-ink-soft">Nenhuma ordem de serviço encontrada.</p>
+          <p className="text-ink-soft">
+            {showArchived
+              ? "Nenhuma OS arquivada."
+              : "Nenhuma ordem de serviço encontrada."}
+          </p>
         </div>
       ) : (
         <div className="mt-6 divide-y divide-line rounded-2xl border border-line bg-paper">

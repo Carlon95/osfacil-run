@@ -4,6 +4,7 @@ import { getSession } from "@/lib/auth";
 import { getUserById } from "@/lib/queries";
 import { logOut } from "@/lib/actions/auth";
 import { DashboardNav } from "@/components/DashboardNav";
+import { isTrialing, trialDaysLeft } from "@/lib/subscription";
 
 export default async function DashboardLayout({
   children,
@@ -21,6 +22,9 @@ export default async function DashboardLayout({
     // diretamente, só Server Actions e Route Handlers.
     redirect("/api/auth/invalidate");
   }
+
+  const trialing = isTrialing(user);
+  const daysLeft = trialDaysLeft(user);
 
   return (
     <div className="min-h-screen bg-paper-dim">
@@ -44,6 +48,19 @@ export default async function DashboardLayout({
           </div>
         </div>
         <DashboardNav />
+        {trialing && (
+          <div className="border-t border-line bg-amber/15 px-5 py-2 text-center text-sm text-ink">
+            {daysLeft === 0
+              ? "Seu teste grátis termina hoje."
+              : `Faltam ${daysLeft} dia${daysLeft === 1 ? "" : "s"} de teste grátis.`}{" "}
+            <Link
+              href="/dashboard/assinatura"
+              className="font-semibold underline underline-offset-2"
+            >
+              Assinar agora
+            </Link>
+          </div>
+        )}
       </header>
       <div className="mx-auto max-w-5xl px-5 py-8">{children}</div>
     </div>

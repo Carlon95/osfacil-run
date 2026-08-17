@@ -1,7 +1,11 @@
 "use client";
 
 import { useTransition } from "react";
-import { updateServiceOrderStatus } from "@/lib/actions/service-orders";
+import { useRouter } from "next/navigation";
+import {
+  updateServiceOrderStatus,
+  setServiceOrderArchived,
+} from "@/lib/actions/service-orders";
 
 const OPTIONS = [
   { value: "ABERTA", label: "Aberta" },
@@ -13,11 +17,14 @@ const OPTIONS = [
 export function OsActions({
   orderId,
   currentStatus,
+  archived,
 }: {
   orderId: string;
   currentStatus: string;
+  archived: boolean;
 }) {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   return (
     <div className="no-print flex flex-wrap items-center gap-2">
@@ -37,6 +44,19 @@ export function OsActions({
           </option>
         ))}
       </select>
+      <button
+        type="button"
+        disabled={isPending}
+        onClick={() =>
+          startTransition(async () => {
+            await setServiceOrderArchived(orderId, !archived);
+            if (!archived) router.push("/dashboard/os");
+          })
+        }
+        className="rounded-full border border-line bg-paper px-4 py-2 text-sm font-medium text-ink-soft hover:border-ink hover:text-ink disabled:opacity-60"
+      >
+        {archived ? "Desarquivar" : "Arquivar"}
+      </button>
       <button
         type="button"
         onClick={() => window.print()}

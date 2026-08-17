@@ -1,16 +1,11 @@
-import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth";
-import { getClientsForUser, getUserById } from "@/lib/queries";
+import { getClientsForUser } from "@/lib/queries";
+import { requireActiveUser } from "@/lib/access";
 import { NewOsForm } from "./NewOsForm";
 
 export default async function NewServiceOrderPage() {
-  const session = await getSession();
-  if (!session) redirect("/login");
+  const user = await requireActiveUser();
 
-  const [clients, user] = await Promise.all([
-    getClientsForUser(session.userId),
-    getUserById(session.userId),
-  ]);
+  const clients = await getClientsForUser(user.id);
 
   return (
     <div>
@@ -20,7 +15,7 @@ export default async function NewServiceOrderPage() {
       </p>
       <NewOsForm
         clients={clients.map((c) => ({ id: c.id, name: c.name }))}
-        profession={user?.profession ?? null}
+        profession={user.profession ?? null}
       />
     </div>
   );

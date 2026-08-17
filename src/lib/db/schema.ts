@@ -11,6 +11,18 @@ export const users = sqliteTable("users", {
   phone: text("phone"),
   profession: text("profession"),
   passwordHash: text("password_hash").notNull(),
+  // trialing | active | past_due | canceled | incomplete
+  subscriptionStatus: text("subscription_status").notNull().default("trialing"),
+  trialEndsAt: text("trial_ends_at"),
+  stripeCustomerId: text("stripe_customer_id"),
+  stripeSubscriptionId: text("stripe_subscription_id"),
+  // Dados fiscais, usados para emissão de nota fiscal (NFS-e)
+  cnpj: text("cnpj"),
+  inscricaoMunicipal: text("inscricao_municipal"),
+  codigoMunicipio: text("codigo_municipio"),
+  optanteSimplesNacional: integer("optante_simples_nacional", { mode: "boolean" }),
+  codigoServicoMunicipal: text("codigo_servico_municipal"),
+  aliquotaIss: real("aliquota_iss"),
   createdAt: text("created_at")
     .notNull()
     .default(sql`(current_timestamp)`),
@@ -56,6 +68,13 @@ export const serviceOrders = sqliteTable("service_orders", {
   status: text("status").notNull().default("ABERTA"),
   notes: text("notes"),
   scheduledDate: text("scheduled_date"),
+  archived: integer("archived", { mode: "boolean" }).notNull().default(false),
+  // Nota fiscal (NFS-e via Focus NFe)
+  nfStatus: text("nf_status"), // processando | autorizada | erro | cancelada
+  nfRef: text("nf_ref"),
+  nfNumber: text("nf_number"),
+  nfPdfUrl: text("nf_pdf_url"),
+  nfError: text("nf_error"),
   createdAt: text("created_at")
     .notNull()
     .default(sql`(current_timestamp)`),

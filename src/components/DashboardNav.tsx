@@ -7,6 +7,8 @@ const NAV_ITEMS = [
   { href: "/dashboard", label: "Resumo" },
   { href: "/dashboard/os", label: "Ordens de serviço" },
   { href: "/dashboard/clientes", label: "Clientes" },
+  { href: "/dashboard/dados-fiscais", label: "Dados fiscais" },
+  { href: "/dashboard/assinatura", label: "Assinatura" },
 ];
 
 export function DashboardNav() {

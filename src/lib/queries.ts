@@ -25,11 +25,16 @@ export async function getClientsForUser(userId: string) {
 
 export async function getServiceOrdersForUser(
   userId: string,
-  status?: string
+  status?: string,
+  archived: boolean = false
 ) {
   const conditions = status
-    ? and(eq(serviceOrders.userId, userId), eq(serviceOrders.status, status))
-    : eq(serviceOrders.userId, userId);
+    ? and(
+        eq(serviceOrders.userId, userId),
+        eq(serviceOrders.status, status),
+        eq(serviceOrders.archived, archived)
+      )
+    : and(eq(serviceOrders.userId, userId), eq(serviceOrders.archived, archived));
 
   const rows = await db
     .select({
@@ -40,6 +45,7 @@ export async function getServiceOrdersForUser(
       laborCost: serviceOrders.laborCost,
       createdAt: serviceOrders.createdAt,
       scheduledDate: serviceOrders.scheduledDate,
+      archived: serviceOrders.archived,
       clientName: clients.name,
     })
     .from(serviceOrders)
@@ -85,9 +91,22 @@ export async function getServiceOrderById(userId: string, orderId: string) {
       notes: serviceOrders.notes,
       scheduledDate: serviceOrders.scheduledDate,
       createdAt: serviceOrders.createdAt,
+      archived: serviceOrders.archived,
+      nfStatus: serviceOrders.nfStatus,
+      nfRef: serviceOrders.nfRef,
+      nfNumber: serviceOrders.nfNumber,
+      nfPdfUrl: serviceOrders.nfPdfUrl,
+      nfError: serviceOrders.nfError,
+      clientId: clients.id,
       clientName: clients.name,
       clientPhone: clients.phone,
+      clientEmail: clients.email,
+      clientDocument: clients.document,
       clientAddress: clients.address,
+      clientNeighborhood: clients.neighborhood,
+      clientCity: clients.city,
+      clientState: clients.state,
+      clientZipCode: clients.zipCode,
     })
     .from(serviceOrders)
     .innerJoin(clients, eq(serviceOrders.clientId, clients.id))
@@ -114,7 +133,7 @@ export async function getDashboardSummary(userId: string) {
       laborCost: serviceOrders.laborCost,
     })
     .from(serviceOrders)
-    .where(eq(serviceOrders.userId, userId))
+    .where(and(eq(serviceOrders.userId, userId), eq(serviceOrders.archived, false)))
     .all();
 
   return {

@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { signUpSchema, logInSchema } from "@/lib/validators";
+import { trialEndDate } from "@/lib/subscription";
 import {
   createSessionCookie,
   clearSessionCookie,
@@ -20,11 +21,11 @@ export async function signUp(
 ): Promise<ActionState> {
   const parsed = signUpSchema.safeParse({
     name: formData.get("name"),
-    businessName: formData.get("businessName"),
+    businessName: formData.get("businessName") || undefined,
     email: formData.get("email"),
-    phone: formData.get("phone"),
-    profession: formData.get("profession"),
-    professionOther: formData.get("professionOther"),
+    phone: formData.get("phone") || undefined,
+    profession: formData.get("profession") || undefined,
+    professionOther: formData.get("professionOther") || undefined,
     password: formData.get("password"),
   });
 
@@ -59,6 +60,7 @@ export async function signUp(
       phone: phone || null,
       profession: finalProfession,
       passwordHash,
+      trialEndsAt: trialEndDate().toISOString(),
     })
     .returning({ id: users.id });
 

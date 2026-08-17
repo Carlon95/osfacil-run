@@ -52,6 +52,19 @@ src/
   proxy.ts                  → protege rotas do /dashboard (equivalente ao middleware)
 ```
 
+## Assinatura
+
+O app cobra assinatura via Stripe: **7 dias de teste grátis sem cartão**,
+depois **R$ 39,90/mês**. Veja `STRIPE.md` para configurar (precisa de
+conta no Stripe). Sem configurar, o app funciona normalmente em
+desenvolvimento — o bloqueio só entra em ação quando o trial expira.
+
+## Nota fiscal
+
+Emissão de NFS-e integrada via Focus NFe. Veja `FOCUSNFE.md` — precisa
+de conta lá, CNPJ, e alguns dados que variam por município (seu contador
+tem essas informações).
+
 ## App Android
 
 Já tem um projeto Android nativo pronto (pasta `android/`), gerado com
@@ -60,21 +73,22 @@ SaaS primeiro) e depois `MOBILE.md` (compilar e publicar o app).
 
 ## O que já funciona (MVP)
 
-- Cadastro e login do prestador
-- Cadastro de clientes (avulso ou direto na hora de criar a OS)
+- Cadastro e login do prestador (com profissão, usada pra sugerir
+  peças/tipos de serviço)
+- Cadastro completo de clientes (criar, editar, dados fiscais e
+  endereço completo)
 - Criação de OS: tipo de serviço, descrição, itens/materiais com
   quantidade e valor, mão de obra, total calculado automaticamente
 - Numeração sequencial da OS por prestador
-- Lista de OS com filtro por status (aberta / em andamento / concluída / cancelada)
+- Lista de OS com filtro por status e por arquivadas
+- Arquivar/desarquivar OS (some da lista principal sem apagar)
 - Detalhe da OS pronto para impressão/PDF (`window.print()`)
+- Emissão de nota fiscal (NFS-e) direto da OS, via Focus NFe
+- Assinatura mensal via Stripe, com teste grátis de 7 dias
 - Resumo com contadores por status
 
 ## O que foi deixado de fora de propósito (próxima rodada)
 
-Para manter o MVP focado em "criar a OS rápido", ficaram de fora nesta
-primeira versão:
-
-- **Cobrança/assinatura (Stripe)** — hoje o app não tem paywall
 - **Envio automático por WhatsApp/e-mail** — hoje o envio é manual (o
   prestador baixa o PDF e manda ele mesmo)
 - **Múltiplos usuários por conta** (equipe/funcionários)
